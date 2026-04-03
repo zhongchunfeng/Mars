@@ -1,0 +1,30 @@
+# Google Cloud 凭据与令牌 (CISA 安全合规)
+credentials.json
+token.json
+client_secrets.json
+
+# 虚拟环境 (基础设施隔离)
+mars_env/
+venv/
+.venv/
+env/
+
+# Python 缓存与元数据
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# 备份文件
+*.backup
+*.bak
+*~
+
+# Agent 运行元数据与输出
+_bmad/
+_bmad-output/
+.gemini/
+
+# 系统文件
+.DS_Store
+Thumbs.db

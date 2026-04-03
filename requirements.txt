@@ -1,0 +1,10 @@
+# 核心引擎：免下载直接抓取 YouTube 官方字幕
+youtube-transcript-api>=0.6.2
+
+# 辅助工具：仅用于极速获取视频标题等元数据 (绝不下载视频)
+yt-dlp>=2023.12.30
+
+# Google Drive API 与 OAuth 2.0 认证
+google-api-python-client>=2.118.0
+google-auth-httplib2>=0.2.0
+google-auth-oauthlib>=1.2.0
