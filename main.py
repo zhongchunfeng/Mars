@@ -81,6 +81,7 @@ def get_video_metadata(url: str) -> str:
             info = yt_dl_instance.extract_info(url, download=False)
             title = info.get('title', '未知视频')
             # 过滤 OS 不允许的文件名特殊字符
+            # 为什么：确保生成的本地 .txt 文件在所有主流桌面操作系统下均能成功创建。
             cleaned_title = re.sub(r'[\\/:*?"<>|]', '_', title)
             return cleaned_title
     except Exception as e:
@@ -96,11 +97,13 @@ def fetch_and_format_transcript(video_id: str, title: str) -> Optional[str]:
     start_time = time.time()
     
     try:
-        # 支持优先级: 英文, 简体中文, 繁体中文
-        api = YouTubeTranscriptApi()
-        transcript_list = api.fetch(video_id, languages=['en', 'zh-Hans', 'zh-Hant']).to_raw_data()
+        # 为什么：使用 YouTubeTranscriptApi().fetch() 以确保与各版本库的兼容性。
+        transcript_list = YouTubeTranscriptApi().fetch(
+            video_id, 
+            languages=['en', 'zh-Hans', 'zh-Hant', 'zh']
+        )
         
-        # 将列表形式的字幕字典串联为纯文本
+        # 将列表形式的字幕字典串联为纯文本，每段间以空格隔开
         full_text = " ".join([item['text'] for item in transcript_list])
         
         # 本地文件名
@@ -163,8 +166,9 @@ def main():
     if url.lower() == 'q' or not url:
         return
 
-    # 提取 Video ID (简单正则)
-    video_id_match = re.search(r'(?:v=|\/)([0-9A-Za-z_-]{11}).*', url)
+    # 提取 Video ID (兼容 URL/Shorts/Live 格式)
+    # 为什么：使用更广泛的正则识别模式，确保针对不同来源的 YouTube 链接都能精准定位视频唯一标识。
+    video_id_match = re.search(r'(?:v=|\/|vi\/|e\/|u\/|shorts\/|live\/)([0-9A-Za-z_-]{11})', url)
     if not video_id_match:
         print("❌ 无法从链接中解析出 Video ID，请检查链接格式。")
         return
